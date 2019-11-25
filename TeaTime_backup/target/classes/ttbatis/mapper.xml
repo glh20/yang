@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.care.ttbatis.ttMapper">
+	<insert id="regmember" parameterType="memdto">
+		insert into member (m_id,m_pw, m_name, m_idnum, m_gender, m_tel, m_mail, m_pic) values
+		(#{m_id},#{m_pw},#{m_name},#{m_idnum},#{m_gender},#{m_tel},#{m_mail}, #{m_pic})
+	</insert>
+	<!-- 아이디 중복 체크 -->
+	<select id="idchk" resultType="String">
+		select m_id from member where m_id
+		= #{m_id}
+	</select>
+	<!-- 전화번호 중복 체크 -->
+	<select id="telchk" resultType="String">
+		select m_tel from member where
+		m_tel = #{m_tel}
+	</select>
+	<!-- 이메일 중복 체크 -->
+	<select id="mailchk" resultType="String">
+		select m_mail from member where
+		m_mail = #{m_mail}
+	</select>
+
+	<!-- 카테고리 insert -->
+	<insert id="category_insert" parameterType="catdto">
+		insert into category
+		values(
+		#{m_id},
+		#{c_sports}, #{c_news },#{c_food },#{c_language },#{c_people },
+		#{c_animal
+		},#{c_fashion },#{c_love },#{c_movie },#{c_religion },
+		#{c_knowledge
+		},#{c_travel },#{c_cartoon },#{c_game },#{c_it },
+		#{c_weather
+		},#{c_music },#{c_car },#{c_economy },#{c_etc },
+		#{c_job },#{c_living
+		},#{c_book },#{c_festival },#{c_health })
+	</insert>
+
+	<!-- 일반 로그인임. -->
+	<select id="loginchk" resultType="memdto" parameterType="String">
+		select * from member where m_id=#{m_id}
+	</select>
+
+	<!-- John(11/14): 사람 조회 select 문 -->
+	<select id="userLookUp" resultType="memdto"
+		parameterType="String">
+		SELECT * FROM member WHERE m_id=#{m_id}
+	</select>
+	<!-- John(11/15): 친구인지 확인 문 -->
+	<select id="checkIfFriend" resultType="Integer"
+		parameterType="mfdto">
+		SELECT f_isfriend FROM myfriend WHERE m_id=#{m_id} AND
+		f_id=#{f_id}
+	</select>
+	
+	<!-- yang -->
+	<!-- 내정보 가져오기 -->
+   <select id="my_info" resultType="memdto" parameterType="String">
+   		select * from member where m_id=#{sessionid}
+   </select>
+   <select id="my_cat" resultType="catdto" parameterType="String">
+   		select * from category where m_id=#{sessionid}
+   </select>
+   <!-- 친구정보 가져오기 -->
+   <select id="f_info" resultType="memdto" parameterType="String">
+   		select * from member where m_id=#{user_id}
+   </select>
+   <!-- 내정보 수정 -->
+   <update id="info_fix" parameterType="memdto">
+		update member set m_name=#{m_name}, m_tel=#{m_tel}, m_mail=#{m_mail} where m_id=#{m_id}
+	</update>
+	<!-- 친구 목록 확인 -->
+	<select id="f_list" resultType="mfdto" parameterType="String">
+   		select f_id from myfriend where m_id=#{user_id}
+   </select>
+	<!-- 친구 추가 -->
+	<insert id="friend_add" parameterType="mfdto">
+		insert into myfriend (m_id, f_id) values(#{m_id}, #{f_id})
+	</insert>
+	<!-- 글쓰기 -->
+	<insert id="write_board" parameterType="podto">
+		insert into post (m_id, p_num, p_title, p_content, p_img, p_cat, p_hash, p_idgroup, p_scope, p_like)
+		values(#{m_id}, p_num_seq.nextval, #{p_title}, #{p_content}, #{p_img}, #{p_cat}, #{p_hash}, p_num_seq.currval, #{p_scope}, #{p_like})
+	</insert>
+	<!-- 글리스트 가져오기 -->
+	<select id="board_list" resultType="podto" parameterType="String">
+		select * from post where m_id=#{sessionid} order by p_date desc
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
